@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  postgres-auth:
+    image: postgres:16-alpine
+    container_name: afrilingua-postgres-auth
+    environment:
+      POSTGRES_DB: afrilingua_auth
+      POSTGRES_USER: afrilingua
+      POSTGRES_PASSWORD: afrilingua_dev_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_auth_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_auth_data:
