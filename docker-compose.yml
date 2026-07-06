@@ -13,5 +13,18 @@ services:
     volumes:
       - postgres_auth_data:/var/lib/postgresql/data
 
+  postgres-content:
+    image: postgres:16-alpine
+    container_name: afrilingua-postgres-content
+    environment:
+      POSTGRES_DB: afrilingua_content
+      POSTGRES_USER: afrilingua
+      POSTGRES_PASSWORD: afrilingua_dev_password
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_content_data:/var/lib/postgresql/data
+
 volumes:
   postgres_auth_data:
+  postgres_content_data:
