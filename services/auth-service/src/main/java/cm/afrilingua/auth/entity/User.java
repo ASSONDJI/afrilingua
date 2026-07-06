@@ -11,13 +11,13 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "utilisateurs")
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Utilisateur {
+public class User {
 
     @Id
     @GeneratedValue
@@ -26,17 +26,17 @@ public class Utilisateur {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "mot_de_passe_hash", nullable = false)
-    private String motDePasseHash;
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
     private Role role = Role.USER;
 
-    @Column(name = "date_creation", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     @Builder.Default
-    private Instant dateCreation = Instant.now();
+    private Instant createdAt = Instant.now();
 
     public enum Role {
         USER, PREMIUM, ADMIN

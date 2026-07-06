@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: AfriLingua Auth Service API
   version: "1.0.0"
-  description: Authentification et gestion des comptes utilisateurs
+  description: Authentication and user account management
 servers:
   - url: /api/auth
 tags:
@@ -12,7 +12,7 @@ paths:
     post:
       tags: [auth]
       operationId: register
-      summary: Créer un nouveau compte utilisateur
+      summary: Create a new user account
       requestBody:
         required: true
         content:
@@ -21,13 +21,13 @@ paths:
               $ref: '#/components/schemas/RegisterRequest'
       responses:
         '201':
-          description: Compte créé
+          description: Account created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthResponse'
         '409':
-          description: Email déjà utilisé
+          description: Email already in use
           content:
             application/json:
               schema:
@@ -36,7 +36,7 @@ paths:
     post:
       tags: [auth]
       operationId: login
-      summary: Authentifier un utilisateur existant
+      summary: Authenticate an existing user
       requestBody:
         required: true
         content:
@@ -45,13 +45,13 @@ paths:
               $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
-          description: Authentification réussie
+          description: Authentication successful
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthResponse'
         '401':
-          description: Identifiants invalides
+          description: Invalid credentials
           content:
             application/json:
               schema:
@@ -60,7 +60,7 @@ paths:
     post:
       tags: [auth]
       operationId: refreshToken
-      summary: Renouveler un access token via le refresh token
+      summary: Renew an access token using a refresh token
       requestBody:
         required: true
         content:
@@ -69,13 +69,13 @@ paths:
               $ref: '#/components/schemas/RefreshRequest'
       responses:
         '200':
-          description: Nouveau couple de tokens
+          description: New token pair
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthResponse'
         '401':
-          description: Refresh token invalide ou expiré
+          description: Invalid or expired refresh token
           content:
             application/json:
               schema:
@@ -84,22 +84,22 @@ components:
   schemas:
     RegisterRequest:
       type: object
-      required: [email, motDePasse]
+      required: [email, password]
       properties:
         email:
           type: string
           format: email
-        motDePasse:
+        password:
           type: string
           minLength: 8
     LoginRequest:
       type: object
-      required: [email, motDePasse]
+      required: [email, password]
       properties:
         email:
           type: string
           format: email
-        motDePasse:
+        password:
           type: string
     RefreshRequest:
       type: object
