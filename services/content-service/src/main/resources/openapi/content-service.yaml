@@ -1,0 +1,232 @@
+openapi: 3.0.3
+info:
+  title: AfriLingua Content Service API
+  version: "1.0.0"
+  description: Management of languages and words (vocabulary content)
+servers:
+  - url: /api/content
+tags:
+  - name: languages
+  - name: words
+paths:
+  /languages:
+    get:
+      tags: [languages]
+      operationId: listLanguages
+      summary: List all available languages
+      responses:
+        '200':
+          description: List of languages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Language'
+    post:
+      tags: [languages]
+      operationId: createLanguage
+      summary: Create a new language
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLanguageRequest'
+      responses:
+        '201':
+          description: Language created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Language'
+        '409':
+          description: Language code already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /languages/{languageId}:
+    get:
+      tags: [languages]
+      operationId: getLanguage
+      summary: Get a language by id
+      parameters:
+        - name: languageId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Language found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Language'
+        '404':
+          description: Language not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /languages/{languageId}/words:
+    get:
+      tags: [words]
+      operationId: listWordsByLanguage
+      summary: List all words for a given language
+      parameters:
+        - name: languageId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: List of words
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Word'
+    post:
+      tags: [words]
+      operationId: createWord
+      summary: Add a word to a language
+      parameters:
+        - name: languageId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWordRequest'
+      responses:
+        '201':
+          description: Word created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Word'
+        '404':
+          description: Language not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /words/{wordId}:
+    get:
+      tags: [words]
+      operationId: getWord
+      summary: Get a word by id
+      parameters:
+        - name: wordId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Word found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Word'
+        '404':
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    CreateLanguageRequest:
+      type: object
+      required: [name, code, region]
+      properties:
+        name:
+          type: string
+          example: Yemba
+        code:
+          type: string
+          example: yem
+          minLength: 2
+          maxLength: 10
+        region:
+          type: string
+          example: Ouest
+    Language:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        code:
+          type: string
+        region:
+          type: string
+        totalWords:
+          type: integer
+    CreateWordRequest:
+      type: object
+      required: [word, translation]
+      properties:
+        word:
+          type: string
+          example: nsem
+        translation:
+          type: string
+          example: maison
+        grammaticalCategory:
+          type: string
+          example: noun
+        phoneticIpa:
+          type: string
+        audioUrl:
+          type: string
+        difficultyLevel:
+          type: string
+          enum: [BEGINNER, INTERMEDIATE, ADVANCED]
+    Word:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        languageId:
+          type: string
+          format: uuid
+        word:
+          type: string
+        translation:
+          type: string
+        grammaticalCategory:
+          type: string
+        phoneticIpa:
+          type: string
+        audioUrl:
+          type: string
+        difficultyLevel:
+          type: string
+          enum: [BEGINNER, INTERMEDIATE, ADVANCED]
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        message:
+          type: string
