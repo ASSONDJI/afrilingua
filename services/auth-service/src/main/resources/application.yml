@@ -35,3 +35,18 @@ management:
     web:
       exposure:
         include: health,info
+
+
+application:
+  security:
+    jwt:
+      # Dev-only secret — MUST be overridden via env var in staging/production, never committed as real value
+      secret-key: ${JWT_SECRET_KEY:404E635266556A586E3272357538782F413F4428472B4B6250645367566B59}
+      access-token-expiration-ms: 900000      # 15 minutes
+      refresh-token-expiration-ms: 604800000  # 7 days
+
+
+
+openapi:
+  authService:
+    base-path: /api/auth
