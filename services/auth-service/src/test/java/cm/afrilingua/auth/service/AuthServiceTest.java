@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,16 +55,26 @@ class AuthServiceTest {
         when(jwtService.generateAccessToken(any(), eq(EMAIL), eq("USER"))).thenReturn("access-token");
         when(jwtService.generateRefreshToken(any(), eq(EMAIL), eq("USER"))).thenReturn("refresh-token");
 
+        // Mimics what Hibernate does on a real INSERT: assigns the @GeneratedValue id
+        // to the entity instance passed to save(). Without this, the mock leaves
+        // user.getId() null, since no real database is involved in this unit test.
+        doAnswer(invocation -> {
+            User savedUser = invocation.getArgument(0);
+            savedUser.setId(UUID.randomUUID());
+            return savedUser;
+        }).when(userRepository).save(any(User.class));
+
         AuthResponse response = authService.register(request);
 
         assertThat(response.getAccessToken()).isEqualTo("access-token");
         assertThat(response.getRefreshToken()).isEqualTo("refresh-token");
         assertThat(response.getEmail()).isEqualTo(EMAIL);
+        assertThat(response.getId()).isNotNull();
 
         verify(userRepository).save(org.mockito.ArgumentMatchers.argThat(user ->
                 user.getEmail().equals(EMAIL) &&
-                user.getPasswordHash().equals(HASHED_PASSWORD) &&
-                user.getRole() == User.Role.USER
+                        user.getPasswordHash().equals(HASHED_PASSWORD) &&
+                        user.getRole() == User.Role.USER
         ));
     }
 
@@ -96,6 +107,7 @@ class AuthServiceTest {
         AuthResponse response = authService.login(request);
 
         assertThat(response.getAccessToken()).isEqualTo("access-token");
+        assertThat(response.getId()).isNotNull();
     }
 
     @Test

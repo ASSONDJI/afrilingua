@@ -71,6 +71,7 @@ public class AuthService {
                 user.getId(), user.getEmail(), user.getRole().name());
 
         return new AuthResponse()
+                .id(user.getId())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .email(user.getEmail())
