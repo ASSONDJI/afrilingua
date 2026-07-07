@@ -4,6 +4,7 @@ services:
   postgres-auth:
     image: postgres:16-alpine
     container_name: afrilingua-postgres-auth
+    restart: unless-stopped
     environment:
       POSTGRES_DB: afrilingua_auth
       POSTGRES_USER: afrilingua
@@ -16,6 +17,7 @@ services:
   postgres-content:
     image: postgres:16-alpine
     container_name: afrilingua-postgres-content
+    restart: unless-stopped
     environment:
       POSTGRES_DB: afrilingua_content
       POSTGRES_USER: afrilingua
@@ -24,7 +26,19 @@ services:
       - "5434:5432"
     volumes:
       - postgres_content_data:/var/lib/postgresql/data
-
+  postgres-lesson:
+    image: postgres:16-alpine
+    container_name: afrilingua-postgres-lesson
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: afrilingua_lesson
+      POSTGRES_USER: afrilingua
+      POSTGRES_PASSWORD: afrilingua_dev_password
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_lesson_data:/var/lib/postgresql/data
 volumes:
   postgres_auth_data:
   postgres_content_data:
+  postgres_lesson_data:
