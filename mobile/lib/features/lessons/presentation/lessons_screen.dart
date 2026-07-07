@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'lesson_providers.dart';
+import 'package:go_router/go_router.dart';
 
 class LessonsScreen extends ConsumerWidget {
   final String languageId;
@@ -46,9 +47,7 @@ class LessonsScreen extends ConsumerWidget {
                   title: Text(lesson.title, style: const TextStyle(fontWeight: FontWeight.w700)),
                   subtitle: Text('Niveau ${lesson.level} · ${lesson.wordIds.length} mots'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    // Prochaine étape : navigation vers l'écran quiz de cette leçon
-                  },
+                  onTap: () => context.push('/quiz/${lesson.id}', extra: lesson.title),
                 ),
               );
             },
