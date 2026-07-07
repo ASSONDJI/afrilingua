@@ -38,7 +38,21 @@ services:
       - "5435:5432"
     volumes:
       - postgres_lesson_data:/var/lib/postgresql/data
+
+  postgres-quiz:
+    image: postgres:16-alpine
+    container_name: afrilingua-postgres-quiz
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: afrilingua_quiz
+      POSTGRES_USER: afrilingua
+      POSTGRES_PASSWORD: afrilingua_dev_password
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_quiz_data:/var/lib/postgresql/data
 volumes:
   postgres_auth_data:
   postgres_content_data:
   postgres_lesson_data:
+  postgres_quiz_data:
