@@ -1,0 +1,199 @@
+openapi: 3.0.3
+info:
+  title: AfriLingua Quiz Service API
+  version: "1.0.0"
+  description: Exercise generation and automatic scoring
+servers:
+  - url: /api
+tags:
+  - name: quizzes
+paths:
+  /quizzes:
+    get:
+      tags: [quizzes]
+      operationId: listQuizzesByLesson
+      summary: List all questions for a given lesson (learner-facing view, no correct answer exposed)
+      parameters:
+        - name: lessonId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: List of questions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Question'
+    post:
+      tags: [quizzes]
+      operationId: createQuestion
+      summary: Create a new question for a lesson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateQuestionRequest'
+      responses:
+        '201':
+          description: Question created (includes the correct answer, since the creator defines it)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionWithAnswer'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /quizzes/{questionId}:
+    get:
+      tags: [quizzes]
+      operationId: getQuestion
+      summary: Get a question by id (learner-facing view, no correct answer exposed)
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Question found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '404':
+          description: Question not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /quizzes/{questionId}/submit:
+    post:
+      tags: [quizzes]
+      operationId: submitAnswer
+      summary: Submit an answer and get immediate scoring feedback (correct answer revealed here, after submission)
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitAnswerRequest'
+      responses:
+        '200':
+          description: Answer scored
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnswerResult'
+        '404':
+          description: Question not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    CreateQuestionRequest:
+      type: object
+      required: [lessonId, type, questionText, correctAnswer]
+      properties:
+        lessonId:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [MULTIPLE_CHOICE, MATCHING, FILL_IN_THE_BLANK]
+        questionText:
+          type: string
+          example: "Comment dit-on 'maison' en yemba ?"
+        options:
+          type: array
+          items:
+            type: string
+          description: Only relevant for MULTIPLE_CHOICE
+        correctAnswer:
+          type: string
+          example: nsem
+    SubmitAnswerRequest:
+      type: object
+      required: [submittedAnswer]
+      properties:
+        submittedAnswer:
+          type: string
+    AnswerResult:
+      type: object
+      properties:
+        questionId:
+          type: string
+          format: uuid
+        correct:
+          type: boolean
+        correctAnswer:
+          type: string
+    Question:
+      type: object
+      description: Learner-facing view — never includes the correct answer
+      properties:
+        id:
+          type: string
+          format: uuid
+        lessonId:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [MULTIPLE_CHOICE, MATCHING, FILL_IN_THE_BLANK]
+        questionText:
+          type: string
+        options:
+          type: array
+          items:
+            type: string
+    QuestionWithAnswer:
+      type: object
+      description: Full view, returned only to the caller who just created the question
+      properties:
+        id:
+          type: string
+          format: uuid
+        lessonId:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [MULTIPLE_CHOICE, MATCHING, FILL_IN_THE_BLANK]
+        questionText:
+          type: string
+        options:
+          type: array
+          items:
+            type: string
+        correctAnswer:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        message:
+          type: string
