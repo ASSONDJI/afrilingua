@@ -110,6 +110,9 @@ components:
     AuthResponse:
       type: object
       properties:
+        id:
+          type: string
+          format: uuid
         accessToken:
           type: string
         refreshToken:
@@ -118,7 +121,7 @@ components:
           type: string
         role:
           type: string
-          enum: [USER, PREMIUM, ADMIN]
+          enum: [ USER, PREMIUM, ADMIN ]
     ErrorResponse:
       type: object
       properties:
