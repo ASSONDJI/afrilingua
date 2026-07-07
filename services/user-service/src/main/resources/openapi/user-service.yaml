@@ -1,0 +1,315 @@
+openapi: 3.0.3
+info:
+  title: AfriLingua User Service
+  version: 1.0.0
+  description: Gestion des profils utilisateurs, préférences de langues, appareils et historique d'activité.
+
+paths:
+  /api/users:
+    post:
+      tags: [users]
+      operationId: createUserProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserProfileRequest'
+      responses:
+        '201':
+          description: Profil créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+
+  /api/users/{accountId}:
+    get:
+      tags: [users]
+      operationId: getUserProfile
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      responses:
+        '200':
+          description: Profil trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+    put:
+      tags: [users]
+      operationId: updateUserProfile
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserProfileRequest'
+      responses:
+        '200':
+          description: Profil mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+
+  /api/users/{accountId}/preferences:
+    get:
+      tags: [preferences]
+      operationId: getPreferences
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      responses:
+        '200':
+          description: Préférences trouvées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPreferences'
+    put:
+      tags: [preferences]
+      operationId: updatePreferences
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePreferencesRequest'
+      responses:
+        '200':
+          description: Préférences mises à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPreferences'
+
+  /api/users/{accountId}/devices:
+    post:
+      tags: [devices]
+      operationId: registerDevice
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDeviceRequest'
+      responses:
+        '201':
+          description: Appareil enregistré (créé ou mis à jour)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+    get:
+      tags: [devices]
+      operationId: listDevices
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      responses:
+        '200':
+          description: Liste des appareils
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+
+  /api/users/{accountId}/activities:
+    post:
+      tags: [activities]
+      operationId: logActivity
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogActivityRequest'
+      responses:
+        '201':
+          description: Activité journalisée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity'
+    get:
+      tags: [activities]
+      operationId: listActivities
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      responses:
+        '200':
+          description: Historique récent (50 dernières activités)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'
+
+components:
+  parameters:
+    AccountId:
+      name: accountId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  schemas:
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        accountId:
+          type: string
+          format: uuid
+        displayName:
+          type: string
+        avatarUrl:
+          type: string
+        bio:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, accountId, displayName]
+
+    CreateUserProfileRequest:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+        displayName:
+          type: string
+          minLength: 2
+          maxLength: 50
+        avatarUrl:
+          type: string
+        bio:
+          type: string
+          maxLength: 280
+      required: [accountId, displayName]
+
+    UpdateUserProfileRequest:
+      type: object
+      properties:
+        displayName:
+          type: string
+          minLength: 2
+          maxLength: 50
+        avatarUrl:
+          type: string
+        bio:
+          type: string
+          maxLength: 280
+
+    UserPreferences:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+        learningLanguages:
+          type: array
+          items:
+            type: string
+      required: [accountId, learningLanguages]
+
+    UpdatePreferencesRequest:
+      type: object
+      properties:
+        learningLanguages:
+          type: array
+          items:
+            type: string
+          minItems: 1
+      required: [learningLanguages]
+
+    Device:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        accountId:
+          type: string
+          format: uuid
+        deviceId:
+          type: string
+        deviceType:
+          $ref: '#/components/schemas/DeviceType'
+        lastActiveAt:
+          type: string
+          format: date-time
+      required: [id, accountId, deviceId, deviceType]
+
+    DeviceType:
+      type: string
+      enum: [ANDROID, IOS, WEB]
+
+    RegisterDeviceRequest:
+      type: object
+      properties:
+        deviceId:
+          type: string
+          minLength: 1
+        deviceType:
+          $ref: '#/components/schemas/DeviceType'
+      required: [deviceId, deviceType]
+
+    Activity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        accountId:
+          type: string
+          format: uuid
+        activityType:
+          $ref: '#/components/schemas/ActivityType'
+        occurredAt:
+          type: string
+          format: date-time
+        metadata:
+          type: string
+          nullable: true
+      required: [id, accountId, activityType, occurredAt]
+
+    ActivityType:
+      type: string
+      enum: [LOGIN, LESSON_COMPLETED, QUIZ_ATTEMPTED, WORD_MASTERED]
+
+    LogActivityRequest:
+      type: object
+      properties:
+        activityType:
+          $ref: '#/components/schemas/ActivityType'
+        metadata:
+          type: string
+          nullable: true
+      required: [activityType]
+
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        message:
+          type: string
