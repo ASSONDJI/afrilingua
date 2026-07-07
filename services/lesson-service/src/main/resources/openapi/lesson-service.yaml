@@ -1,0 +1,166 @@
+openapi: 3.0.3
+info:
+  title: AfriLingua Lesson Service API
+  version: "1.0.0"
+  description: Management of lessons and learning paths
+servers:
+  - url: /api
+tags:
+  - name: lessons
+paths:
+  /lessons:
+    get:
+      tags: [lessons]
+      operationId: listLessonsByLanguage
+      summary: List all lessons for a given language, ordered by their sequence
+      parameters:
+        - name: languageId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: List of lessons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lesson'
+    post:
+      tags: [lessons]
+      operationId: createLesson
+      summary: Create a new lesson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLessonRequest'
+      responses:
+        '201':
+          description: Lesson created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lesson'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /lessons/{lessonId}:
+    get:
+      tags: [lessons]
+      operationId: getLesson
+      summary: Get a lesson by id
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lesson found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lesson'
+        '404':
+          description: Lesson not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /lessons/{lessonId}/words:
+    post:
+      tags: [lessons]
+      operationId: addWordToLesson
+      summary: Attach a word (by its content-service id) to a lesson
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddWordToLessonRequest'
+      responses:
+        '200':
+          description: Word attached to lesson
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lesson'
+        '404':
+          description: Lesson not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    CreateLessonRequest:
+      type: object
+      required: [languageId, title, order, level]
+      properties:
+        languageId:
+          type: string
+          format: uuid
+        title:
+          type: string
+          example: Greetings
+        order:
+          type: integer
+          minimum: 1
+        level:
+          type: integer
+          minimum: 1
+          maximum: 10
+    AddWordToLessonRequest:
+      type: object
+      required: [wordId]
+      properties:
+        wordId:
+          type: string
+          format: uuid
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        languageId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        order:
+          type: integer
+        level:
+          type: integer
+        wordIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        message:
+          type: string
