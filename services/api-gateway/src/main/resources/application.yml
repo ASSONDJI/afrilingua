@@ -11,30 +11,26 @@ spring:
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/api/auth/**
-        - id: user-service
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=/api/users/**
         - id: content-service
           uri: lb://CONTENT-SERVICE
           predicates:
-            - Path=/api/langues/**,/api/mots/**
+            - Path=/api/content/**
         - id: lesson-service
           uri: lb://LESSON-SERVICE
           predicates:
-            - Path=/api/lecons/**
+            - Path=/api/lessons/**
         - id: quiz-service
           uri: lb://QUIZ-SERVICE
           predicates:
-            - Path=/api/quiz/**
+            - Path=/api/quizzes/**
         - id: speech-service
           uri: lb://SPEECH-SERVICE
           predicates:
-            - Path=/api/prononciation/**
+            - Path=/api/pronunciation/**
         - id: recommendation-service
           uri: lb://RECOMMENDATION-SERVICE
           predicates:
-            - Path=/api/recommandations/**
+            - Path=/api/recommendations/**
         - id: media-service
           uri: lb://MEDIA-SERVICE
           predicates:
