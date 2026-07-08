@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 /// Never hit a microservice's own port directly from the app.
 class ApiClient {
   static const String baseUrl = 'http://localhost:8080';
-
   late final Dio dio;
 
   ApiClient() {
@@ -17,4 +16,8 @@ class ApiClient {
       ),
     );
   }
+
+  /// Test-only constructor: injects a (typically mocked) Dio instance
+  /// directly, bypassing real network configuration.
+  ApiClient.withDio(this.dio);
 }
