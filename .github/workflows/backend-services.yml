@@ -1,0 +1,46 @@
+name: Backend Services (Java)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/auth-service/**'
+      - 'services/content-service/**'
+      - 'services/lesson-service/**'
+      - 'services/quiz-service/**'
+      - 'services/user-service/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'services/auth-service/**'
+      - 'services/content-service/**'
+      - 'services/lesson-service/**'
+      - 'services/quiz-service/**'
+      - 'services/user-service/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - auth-service
+          - content-service
+          - lesson-service
+          - quiz-service
+          - user-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Run tests (unit + Testcontainers integration)
+        working-directory: services/${{ matrix.service }}
+        run: mvn -B test
