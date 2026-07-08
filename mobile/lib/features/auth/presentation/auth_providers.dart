@@ -19,18 +19,22 @@ class AuthController extends StateNotifier<AuthResponse?> {
 
   AuthController(this._repository, this._storage) : super(null);
 
-  Future<void> login(String email, String password) async {
+  Future<AuthResponse> login(String email, String password) async {
     final result = await _repository.login(email: email, password: password);
     await _storage.write(key: 'access_token', value: result.accessToken);
     await _storage.write(key: 'refresh_token', value: result.refreshToken);
+    await _storage.write(key: 'account_id', value: result.id);
     state = result;
+    return result;
   }
 
-  Future<void> register(String email, String password) async {
+  Future<AuthResponse> register(String email, String password) async {
     final result = await _repository.register(email: email, password: password);
     await _storage.write(key: 'access_token', value: result.accessToken);
     await _storage.write(key: 'refresh_token', value: result.refreshToken);
+    await _storage.write(key: 'account_id', value: result.id);
     state = result;
+    return result;
   }
 
   Future<void> logout() async {
@@ -41,4 +45,9 @@ class AuthController extends StateNotifier<AuthResponse?> {
 
 final authControllerProvider = StateNotifierProvider<AuthController, AuthResponse?>((ref) {
   return AuthController(ref.watch(authRepositoryProvider), ref.watch(secureStorageProvider));
+});
+
+/// Convenience accessor: the current session's accountId, or null if logged out.
+final accountIdProvider = Provider<String?>((ref) {
+  return ref.watch(authControllerProvider)?.id;
 });

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../auth/presentation/auth_providers.dart';
 import 'language_providers.dart';
 
 class LanguagesScreen extends ConsumerWidget {
@@ -16,11 +15,8 @@ class LanguagesScreen extends ConsumerWidget {
         title: const Text('Choisis une langue'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await ref.read(authControllerProvider.notifier).logout();
-              if (context.mounted) context.go('/login');
-            },
+            icon: const Icon(Icons.person),
+            onPressed: () => context.push('/profile'),
           ),
         ],
       ),

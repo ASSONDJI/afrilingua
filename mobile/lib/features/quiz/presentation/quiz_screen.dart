@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/answer_result_model.dart';
 import '../domain/question_model.dart';
 import 'quiz_providers.dart';
+import '../../auth/presentation/auth_providers.dart';
+import '../../user/presentation/user_providers.dart';
 
 class QuizScreen extends ConsumerStatefulWidget {
   final String lessonId;
@@ -20,25 +22,35 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   AnswerResult? _result;
   bool _submitting = false;
 
-  Future<void> _submit(Question question) async {
-    if (_selectedOption == null || _submitting) return;
+ Future<void> _submit(Question question) async {
+   if (_selectedOption == null || _submitting) return;
 
-    setState(() => _submitting = true);
-    try {
-      final result = await ref
-          .read(quizRepositoryProvider)
-          .submitAnswer(question.id, _selectedOption!);
-      setState(() => _result = result);
-    } catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur lors de la soumission : $error')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _submitting = false);
-    }
-  }
+   setState(() => _submitting = true);
+   try {
+     final result = await ref
+         .read(quizRepositoryProvider)
+         .submitAnswer(question.id, _selectedOption!);
+     setState(() => _result = result);
+
+     final accountId = ref.read(accountIdProvider);
+     if (accountId != null) {
+       // Best-effort: activity logging must never block the quiz flow.
+       ref.read(userRepositoryProvider).logActivity(
+             accountId: accountId,
+             activityType: 'QUIZ_ATTEMPTED',
+             metadata: 'questionId=${question.id};correct=${result.correct}',
+           ).catchError((_) {});
+     }
+   } catch (error) {
+     if (mounted) {
+       ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(content: Text('Erreur lors de la soumission : $error')),
+       );
+     }
+   } finally {
+     if (mounted) setState(() => _submitting = false);
+   }
+ }
 
   void _next(int totalQuestions) {
     if (_currentIndex < totalQuestions - 1) {

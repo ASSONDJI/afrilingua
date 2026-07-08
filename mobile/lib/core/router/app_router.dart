@@ -5,6 +5,7 @@ import '../../features/auth/presentation/register_screen.dart';
 import '../../features/languages/presentation/languages_screen.dart';
 import '../../features/lessons/presentation/lessons_screen.dart';
 import '../../features/quiz/presentation/quiz_screen.dart';
+import '../../features/user/presentation/profile_screen.dart';
 
 final routerProvider = Provider((ref) {
   return GoRouter(
@@ -21,6 +22,7 @@ final routerProvider = Provider((ref) {
           return QuizScreen(lessonId: lessonId, lessonTitle: lessonTitle);
         },
       ),
+      GoRoute(path: '/profile', builder: (context, state) => const ProfileScreen()),
       GoRoute(
         path: '/lessons/:languageId',
         builder: (context, state) {

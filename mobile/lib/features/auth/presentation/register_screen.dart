@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../data/auth_repository.dart';
 import 'auth_providers.dart';
+import '../../user/presentation/user_providers.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -34,10 +35,22 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     });
 
     try {
-      await ref.read(authControllerProvider.notifier).register(
+      final authResult = await ref.read(authControllerProvider.notifier).register(
             _emailController.text.trim(),
             _passwordController.text,
           );
+
+      // Best-effort: a missing profile shouldn't block registration.
+      // If user-service is briefly unavailable, the profile can be created later.
+      try {
+        await ref.read(userRepositoryProvider).createProfile(
+              accountId: authResult.id,
+              displayName: _emailController.text.trim().split('@').first,
+            );
+      } catch (_) {
+        // Silently ignored: profile creation failure must not block navigation.
+      }
+
       if (mounted) context.go('/lessons');
     } on AuthException catch (e) {
       setState(() => _errorMessage = e.message);
