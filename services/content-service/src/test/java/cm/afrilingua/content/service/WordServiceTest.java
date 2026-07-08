@@ -1,5 +1,6 @@
 package cm.afrilingua.content.service;
 
+import cm.afrilingua.content.client.RecommendationClient;
 import cm.afrilingua.content.dto.CreateWordRequest;
 import cm.afrilingua.content.entity.Language;
 import cm.afrilingua.content.entity.Word;
@@ -32,6 +33,9 @@ class WordServiceTest {
     @Mock
     private LanguageService languageService;
 
+    @Mock
+    private RecommendationClient recommendationClient;
+
     @InjectMocks
     private WordService wordService;
 
@@ -56,6 +60,71 @@ class WordServiceTest {
                 .isEqualTo(cm.afrilingua.content.dto.Word.DifficultyLevelEnum.BEGINNER);
 
         verify(wordRepository).save(any(Word.class));
+        verify(recommendationClient, never()).classify(any(), any());
+    }
+
+    @Test
+    void create_shouldCallRecommendationClient_whenTonesAreProvided() {
+        UUID languageId = UUID.randomUUID();
+        Language language = Language.builder().id(languageId).name("Yemba").code("yem").region("Ouest").build();
+        CreateWordRequest request = new CreateWordRequest()
+                .word("tsa")
+                .translation("test")
+                .grammaticalCategory(CATEGORY)
+                .tone1(CreateWordRequest.Tone1Enum.HAUT)
+                .tone2(CreateWordRequest.Tone2Enum.HAUT);
+
+        when(languageService.getEntityById(languageId)).thenReturn(language);
+        when(recommendationClient.classify("haut", "haut")).thenReturn(Word.DifficultyLevel.ADVANCED);
+
+        cm.afrilingua.content.dto.Word response = wordService.create(languageId, request);
+
+        assertThat(response.getDifficultyLevel())
+                .isEqualTo(cm.afrilingua.content.dto.Word.DifficultyLevelEnum.ADVANCED);
+        assertThat(response.getTone1()).isEqualTo(cm.afrilingua.content.dto.Word.Tone1Enum.HAUT);
+        assertThat(response.getTone2()).isEqualTo(cm.afrilingua.content.dto.Word.Tone2Enum.HAUT);
+
+        verify(recommendationClient).classify("haut", "haut");
+    }
+
+    @Test
+    void create_shouldNotCallRecommendationClient_whenOnlyOneToneIsProvided() {
+        UUID languageId = UUID.randomUUID();
+        Language language = Language.builder().id(languageId).name("Yemba").code("yem").region("Ouest").build();
+        CreateWordRequest request = new CreateWordRequest()
+                .word(WORD)
+                .translation(TRANSLATION)
+                .grammaticalCategory(CATEGORY)
+                .tone1(CreateWordRequest.Tone1Enum.BAS);
+
+        when(languageService.getEntityById(languageId)).thenReturn(language);
+
+        cm.afrilingua.content.dto.Word response = wordService.create(languageId, request);
+
+        assertThat(response.getDifficultyLevel())
+                .isEqualTo(cm.afrilingua.content.dto.Word.DifficultyLevelEnum.BEGINNER);
+        verify(recommendationClient, never()).classify(any(), any());
+    }
+
+    @Test
+    void create_shouldUseExplicitDifficultyLevel_evenWhenTonesAreProvided() {
+        UUID languageId = UUID.randomUUID();
+        Language language = Language.builder().id(languageId).name("Yemba").code("yem").region("Ouest").build();
+        CreateWordRequest request = new CreateWordRequest()
+                .word("tsa")
+                .translation("test")
+                .grammaticalCategory(CATEGORY)
+                .tone1(CreateWordRequest.Tone1Enum.HAUT)
+                .tone2(CreateWordRequest.Tone2Enum.HAUT)
+                .difficultyLevel(CreateWordRequest.DifficultyLevelEnum.BEGINNER);
+
+        when(languageService.getEntityById(languageId)).thenReturn(language);
+
+        cm.afrilingua.content.dto.Word response = wordService.create(languageId, request);
+
+        assertThat(response.getDifficultyLevel())
+                .isEqualTo(cm.afrilingua.content.dto.Word.DifficultyLevelEnum.BEGINNER);
+        verify(recommendationClient, never()).classify(any(), any());
     }
 
     @Test
