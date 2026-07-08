@@ -47,6 +47,18 @@ public class Word {
     @Builder.Default
     private DifficultyLevel difficultyLevel = DifficultyLevel.BEGINNER;
 
+    // Optional linguistic annotations (e.g. Yemba tonal data). Null for
+    // languages/words without this data — see RecommendationClient for how
+    // their absence triggers a fallback to the default difficulty level.
+    @Column(name = "nb_syllabes")
+    private Integer nbSyllabes;
+
+    @Column(name = "tone1")
+    private String tone1;
+
+    @Column(name = "tone2")
+    private String tone2;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     @Builder.Default
     private Instant createdAt = Instant.now();

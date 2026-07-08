@@ -180,7 +180,7 @@ components:
           type: integer
     CreateWordRequest:
       type: object
-      required: [word, translation]
+      required: [ word, translation ]
       properties:
         word:
           type: string
@@ -197,7 +197,19 @@ components:
           type: string
         difficultyLevel:
           type: string
-          enum: [BEGINNER, INTERMEDIATE, ADVANCED]
+          enum: [ BEGINNER, INTERMEDIATE, ADVANCED ]
+        nbSyllabes:
+          type: integer
+          nullable: true
+          description: Number of syllables. Optional linguistic annotation, required (with tone1/tone2) to trigger automatic difficulty classification.
+        tone1:
+          type: string
+          nullable: true
+          enum: [ bas, moyen, haut ]
+        tone2:
+          type: string
+          nullable: true
+          enum: [ bas, moyen, haut ]
     Word:
       type: object
       properties:
@@ -219,7 +231,18 @@ components:
           type: string
         difficultyLevel:
           type: string
-          enum: [BEGINNER, INTERMEDIATE, ADVANCED]
+          enum: [ BEGINNER, INTERMEDIATE, ADVANCED ]
+        nbSyllabes:
+          type: integer
+          nullable: true
+        tone1:
+          type: string
+          nullable: true
+          enum: [ bas, moyen, haut ]
+        tone2:
+          type: string
+          nullable: true
+          enum: [ bas, moyen, haut ]
     ErrorResponse:
       type: object
       properties:

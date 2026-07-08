@@ -2,12 +2,12 @@ import pandas as pd
 from fastapi import APIRouter
 
 from app.models.schemas import (
-    DifficultyClassifyRequest,
-    DifficultyClassifyResponse,
+    ApplyRuleRequest,
+    ApplyRuleResponse,
     DifficultyTrainRequest,
     DifficultyTrainResponse,
 )
-from app.services.difficulty_service import DifficultyService
+from app.services.difficulty_service import DifficultyService, apply_labeling_rule
 
 router = APIRouter()
 
@@ -28,12 +28,17 @@ def train_difficulty_rule(request: DifficultyTrainRequest) -> DifficultyTrainRes
     )
 
 
-@router.post("/classify", response_model=DifficultyClassifyResponse)
-def classify_word(request: DifficultyClassifyRequest) -> DifficultyClassifyResponse:
-    niveau = _service.classify(
-        nb_syllabes=request.nb_syllabes,
-        longueur_mot=request.longueur_mot,
-        ton1=request.ton1,
-        ton2=request.ton2,
-    )
-    return DifficultyClassifyResponse(niveau=niveau)
+@router.post("/apply-rule", response_model=ApplyRuleResponse)
+def apply_rule(request: ApplyRuleRequest) -> ApplyRuleResponse:
+    """
+    Direct, stateless application of the hand-written tone-based labeling
+    rule (see apply_labeling_rule in difficulty_service.py). Unlike
+    /classify, this never depends on /train having been called first --
+    it IS the ground truth the tree in /train is shown to reproduce.
+
+    This is the endpoint content-service should call when creating a new
+    word: it needs an immediate, always-available answer, not a stateful
+    model that may or may not have been trained in this process's lifetime.
+    """
+    niveau = apply_labeling_rule(request.ton1, request.ton2)
+    return ApplyRuleResponse(niveau=niveau)

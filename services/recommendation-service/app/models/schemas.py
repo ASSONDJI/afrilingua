@@ -80,3 +80,11 @@ class SrsReviewRequest(BaseModel):
 class SrsReviewResponse(BaseModel):
     next_review_at: datetime
     new_state: ReviewStateModel
+
+class ApplyRuleRequest(BaseModel):
+    ton1: str
+    ton2: str
+
+
+class ApplyRuleResponse(BaseModel):
+    niveau: str
