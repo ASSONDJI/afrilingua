@@ -7,7 +7,7 @@ training data at all — it is a deterministic scheduling function driven
 purely by the learner's own answer quality on each review.
 """
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 
 @dataclass
@@ -36,7 +36,7 @@ class SrsService:
         if not 0 <= quality <= 5:
             raise ValueError("quality must be between 0 and 5")
 
-        now = now or datetime.utcnow()
+        now = now or datetime.now(timezone.utc)
 
         if quality < 3:
             new_state = ReviewState(repetitions=0, ease_factor=state.ease_factor, interval_days=1)
