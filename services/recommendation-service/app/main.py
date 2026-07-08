@@ -36,4 +36,3 @@ def health():
     # Named to match the Spring Boot services' health endpoint convention,
     # even though this is FastAPI — keeps monitoring/tooling consistent.
     return {"status": "UP"}
-# CI trigger test

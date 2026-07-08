@@ -16,4 +16,4 @@ public class AuthServiceApplication {
         Locale.setDefault(Locale.ENGLISH);
         SpringApplication.run(AuthServiceApplication.class, args);
     }
-}// CI trigger test
+}

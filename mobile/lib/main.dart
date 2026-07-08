@@ -23,4 +23,3 @@ class AfriLinguaApp extends ConsumerWidget {
   }
 }
 
-// CI trigger test
