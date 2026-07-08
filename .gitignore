@@ -9,14 +9,15 @@ target/
 .vscode/
 
 # Flutter
-mobile/afrilingua_app/build/
-mobile/afrilingua_app/.dart_tool/
-mobile/afrilingua_app/.flutter-plugins
-mobile/afrilingua_app/.flutter-plugins-dependencies
+mobile/build/
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
 
 # Python
 **/__pycache__/
 **/*.pyc
+**/venv/
 **/.venv/
 
 # Env / secrets
