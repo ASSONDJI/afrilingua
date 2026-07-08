@@ -13,6 +13,9 @@ mobile/build/
 mobile/.dart_tool/
 mobile/.flutter-plugins
 mobile/.flutter-plugins-dependencies
+mobile/linux/
+mobile/windows/
+mobile/macos/
 
 # Python
 **/__pycache__/
