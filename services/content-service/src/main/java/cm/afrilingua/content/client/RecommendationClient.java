@@ -1,21 +1,24 @@
 package cm.afrilingua.content.client;
 
 import cm.afrilingua.content.entity.Word;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class RecommendationClient {
 
     private static final String APPLY_RULE_URL =
             "http://RECOMMENDATION-SERVICE/api/recommendations/difficulty/apply-rule";
 
     private final RestTemplate restTemplate;
+
+    public RecommendationClient(@Qualifier("loadBalancedRestTemplate") RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     /**
      * Calls recommendation-service to apply the deterministic tone-based

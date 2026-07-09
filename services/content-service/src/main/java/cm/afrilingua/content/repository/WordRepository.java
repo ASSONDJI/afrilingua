@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface WordRepository extends JpaRepository<Word, UUID> {
     List<Word> findByLanguageId(UUID languageId);
+    boolean existsByLanguageIdAndWordIgnoreCase(UUID languageId, String word);
 }

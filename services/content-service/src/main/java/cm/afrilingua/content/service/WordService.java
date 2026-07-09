@@ -48,7 +48,7 @@ public class WordService {
     /**
      * Classification priority:
      * 1. An explicit difficultyLevel in the request always wins (manual override).
-     * 2. If nbSyllabes/tone1/tone2 are all provided, ask recommendation-service.
+     * 2. If tone1/tone2 are both provided, ask recommendation-service.
      * 3. Otherwise, default to BEGINNER — unchanged from the original behavior,
      *    for languages/words without tonal annotation (e.g. Duala, Bassa).
      */
@@ -81,6 +81,11 @@ public class WordService {
         return wordRepository.findByLanguageId(languageId).stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    /** Used by NTeALanImportService to skip words already imported, keeping re-runs idempotent. */
+    public boolean wordExists(UUID languageId, String word) {
+        return wordRepository.existsByLanguageIdAndWordIgnoreCase(languageId, word);
     }
 
     private cm.afrilingua.content.dto.Word toDto(Word word) {

@@ -122,6 +122,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /languages/{languageId}/import-ntealan:
+    post:
+      tags: [languages]
+      operationId: importFromNtealan
+      summary: Import a NTeALan dictionary's articles as words for this language
+      parameters:
+        - name: languageId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: dictionaryId
+          in: query
+          required: true
+          schema:
+            type: string
+            example: dl_fr_2018
+      responses:
+        '200':
+          description: Import completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResult'
+        '404':
+          description: Language not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /words/{wordId}:
     get:
       tags: [words]
@@ -180,7 +211,7 @@ components:
           type: integer
     CreateWordRequest:
       type: object
-      required: [ word, translation ]
+      required: [word, translation]
       properties:
         word:
           type: string
@@ -197,7 +228,7 @@ components:
           type: string
         difficultyLevel:
           type: string
-          enum: [ BEGINNER, INTERMEDIATE, ADVANCED ]
+          enum: [BEGINNER, INTERMEDIATE, ADVANCED]
         nbSyllabes:
           type: integer
           nullable: true
@@ -205,11 +236,11 @@ components:
         tone1:
           type: string
           nullable: true
-          enum: [ bas, moyen, haut ]
+          enum: [bas, moyen, haut]
         tone2:
           type: string
           nullable: true
-          enum: [ bas, moyen, haut ]
+          enum: [bas, moyen, haut]
     Word:
       type: object
       properties:
@@ -231,18 +262,27 @@ components:
           type: string
         difficultyLevel:
           type: string
-          enum: [ BEGINNER, INTERMEDIATE, ADVANCED ]
+          enum: [BEGINNER, INTERMEDIATE, ADVANCED]
         nbSyllabes:
           type: integer
           nullable: true
         tone1:
           type: string
           nullable: true
-          enum: [ bas, moyen, haut ]
+          enum: [bas, moyen, haut]
         tone2:
           type: string
           nullable: true
-          enum: [ bas, moyen, haut ]
+          enum: [bas, moyen, haut]
+    ImportResult:
+      type: object
+      properties:
+        imported:
+          type: integer
+        skipped:
+          type: integer
+        failed:
+          type: integer
     ErrorResponse:
       type: object
       properties:

@@ -1,0 +1,60 @@
+{
+  "articles": [
+    {
+      "articles_page": "1",
+      "id_dico": "dl_fr_2018",
+      "id_article": 14519,
+      "public_id": "9952325f-a4ac-4a2a-8654-aa082753019c",
+      "verified": false,
+      "ntealan": true,
+      "license": "CC BY-SA",
+      "article": {
+        "article": {
+          "date": "2019-07-14T08:12:34.541Z",
+          "type": "verb",
+          "entry": {
+            "category": "verb",
+            "form": "simple",
+            "id": "0",
+            "variant": {
+              "forme": "simple",
+              "type": "DN",
+              "radical": "a"
+            }
+          },
+          "category": {
+            "cat": {
+              "number": "1",
+              "content": "pron"
+            }
+          },
+          "translations": {
+            "equivalent": [
+              {
+                "lang": "fr",
+                "number": "1",
+                "content": "il"
+              },
+              {
+                "lang": "fr",
+                "number": "2",
+                "content": "elle"
+              }
+            ]
+          },
+          "examples": {
+            "example": [
+              {
+                "lang": "fr",
+                "number": "1",
+                "target": "il donne",
+                "content": "a mabola"
+              }
+            ]
+          }
+        }
+      },
+      "radical": "a"
+    }
+  ]
+}
