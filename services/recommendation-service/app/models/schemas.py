@@ -88,3 +88,24 @@ class ApplyRuleRequest(BaseModel):
 
 class ApplyRuleResponse(BaseModel):
     niveau: str
+
+
+class BadgeInfo(BaseModel):
+    code: str
+    name: str
+    earned_at: datetime
+
+
+class ProgressionResponse(BaseModel):
+    """Read model for a user's gamification state, consumed by the mobile
+    app to render XP/level/streak/badges. Returned with all-zero defaults
+    (never a 404) when the user has no progression row yet, since 'no
+    activity yet' is a normal, expected state -- not an error."""
+    user_id: str
+    xp: int
+    level: int
+    current_streak: int
+    longest_streak: int
+    lessons_completed: int
+    has_perfect_quiz: bool
+    badges: list[BadgeInfo]
