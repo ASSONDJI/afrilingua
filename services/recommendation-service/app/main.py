@@ -5,6 +5,7 @@ from fastapi import FastAPI
 
 from app.core.config import settings
 from app.api import router as api_router
+from app.messaging.consumer import start_consumer_in_background
 
 
 @asynccontextmanager
@@ -17,6 +18,10 @@ async def lifespan(app: FastAPI):
         instance_host=settings.INSTANCE_HOST,
         instance_port=settings.SERVICE_PORT,
     )
+    # Consumer RabbitMQ (quiz.completed / lesson.completed -> gamification)
+    # tourne dans un thread daemon separe, car pika est bloquant et
+    # incompatible avec la boucle asyncio de FastAPI/uvicorn.
+    start_consumer_in_background()
     yield
     await eureka_client.stop_async()
 
@@ -27,7 +32,6 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
-
 app.include_router(api_router, prefix="/api/recommendations")
 
 

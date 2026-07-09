@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgres-auth:
     image: postgres:16-alpine
@@ -13,7 +11,6 @@ services:
       - "5433:5432"
     volumes:
       - postgres_auth_data:/var/lib/postgresql/data
-
   postgres-content:
     image: postgres:16-alpine
     container_name: afrilingua-postgres-content
@@ -38,7 +35,6 @@ services:
       - "5435:5432"
     volumes:
       - postgres_lesson_data:/var/lib/postgresql/data
-
   postgres-quiz:
     image: postgres:16-alpine
     container_name: afrilingua-postgres-quiz
@@ -51,7 +47,6 @@ services:
       - "5436:5432"
     volumes:
       - postgres_quiz_data:/var/lib/postgresql/data
-
   postgres-user:
     image: postgres:16-alpine
     container_name: afrilingua-postgres-user
@@ -63,9 +58,35 @@ services:
       - "5437:5432"
     volumes:
       - postgres_user_data:/var/lib/postgresql/data
+  postgres-recommendation:
+    image: postgres:16-alpine
+    container_name: afrilingua-postgres-recommendation
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: afrilingua_recommendation
+      POSTGRES_USER: afrilingua
+      POSTGRES_PASSWORD: afrilingua_dev_password
+    ports:
+      - "5438:5432"
+    volumes:
+      - postgres_recommendation_data:/var/lib/postgresql/data
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: afrilingua-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: afrilingua
+      RABBITMQ_DEFAULT_PASS: afrilingua_dev_password
+    ports:
+      - "5672:5672"   # AMQP (utilisé par les services)
+      - "15672:15672" # Interface de gestion web (http://localhost:15672)
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
 volumes:
   postgres_auth_data:
   postgres_content_data:
   postgres_lesson_data:
   postgres_quiz_data:
   postgres_user_data:
+  postgres_recommendation_data:
+  rabbitmq_data:
