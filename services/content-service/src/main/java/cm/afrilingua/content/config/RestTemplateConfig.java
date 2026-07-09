@@ -8,11 +8,18 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class RestTemplateConfig {
 
-    // @LoadBalanced lets this RestTemplate resolve "http://RECOMMENDATION-SERVICE/..."
-    // via Eureka, the same way Spring Cloud Gateway resolves "lb://RECOMMENDATION-SERVICE".
+    // Resolves service names (e.g. "RECOMMENDATION-SERVICE") via Eureka.
+    // Only for calls to other services registered in this project's discovery server.
     @Bean
     @LoadBalanced
-    public RestTemplate restTemplate() {
+    public RestTemplate loadBalancedRestTemplate() {
+        return new RestTemplate();
+    }
+
+    // Plain RestTemplate for real external domains (e.g. apis.ntealan.net),
+    // which must never go through Eureka's service resolution.
+    @Bean
+    public RestTemplate externalRestTemplate() {
         return new RestTemplate();
     }
 }

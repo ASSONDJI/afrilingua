@@ -2,8 +2,10 @@ package cm.afrilingua.content.controller;
 
 import cm.afrilingua.content.api.LanguagesApi;
 import cm.afrilingua.content.dto.CreateLanguageRequest;
+import cm.afrilingua.content.dto.ImportResult;
 import cm.afrilingua.content.dto.Language;
 import cm.afrilingua.content.service.LanguageService;
+import cm.afrilingua.content.service.NTeALanImportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.UUID;
 public class LanguageController implements LanguagesApi {
 
     private final LanguageService languageService;
+    private final NTeALanImportService nteALanImportService;
 
     @Override
     public ResponseEntity<Language> createLanguage(CreateLanguageRequest createLanguageRequest) {
@@ -34,5 +37,14 @@ public class LanguageController implements LanguagesApi {
     @Override
     public ResponseEntity<List<Language>> listLanguages() {
         return ResponseEntity.ok(languageService.listAll());
+    }
+
+    @Override
+    public ResponseEntity<ImportResult> importFromNtealan(UUID languageId, String dictionaryId) {
+        NTeALanImportService.ImportResult result = nteALanImportService.importDictionary(languageId, dictionaryId);
+        return ResponseEntity.ok(new ImportResult()
+                .imported(result.imported())
+                .skipped(result.skipped())
+                .failed(result.failed()));
     }
 }

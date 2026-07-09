@@ -1,0 +1,51 @@
+{
+  "articles": [
+    {
+      "articles_page": "1",
+      "id_dico": "bs_fr_2019",
+      "id_article": 14671,
+      "public_id": "2c7b0e02-8689-4c9e-b7b6-1cfe5d3a8c2b",
+      "verified": false,
+      "ntealan": true,
+      "license": "CC BY-SA",
+      "article": {
+        "article": {
+          "date": "2019-08-06T13:33:10.302Z",
+          "type": "noun",
+          "entry": {
+            "category": "noun",
+            "form": "simple",
+            "id": "129",
+            "variant": {
+              "forme": "simple",
+              "type": "ba",
+              "radical": "\u00e1\u00e1!"
+            }
+          },
+          "category": {
+            "cat": {
+              "number": "1",
+              "content": "interj"
+            }
+          },
+          "translations": {
+            "equivalent": {
+              "lang": "fr",
+              "number": "1",
+              "content": "ah!"
+            }
+          },
+          "examples": {
+            "example": {
+              "lang": "fr",
+              "number": "1",
+              "target": "ah! je le savais",
+              "content": " \u00e1\u00e1! m\u025b\u0300 j\u00edk h\u00e1l\u00e0"
+            }
+          }
+        }
+      },
+      "radical": "\u00e1\u00e1!"
+    }
+  ]
+}
