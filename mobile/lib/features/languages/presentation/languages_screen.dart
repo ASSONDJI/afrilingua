@@ -51,7 +51,17 @@ class LanguagesScreen extends ConsumerWidget {
                     style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
                   ),
                   subtitle: Text('${language.region} · ${language.totalWords} mots'),
-                  trailing: const Icon(Icons.chevron_right),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.bar_chart),
+                        tooltip: 'Statistiques',
+                        onPressed: () => context.push('/statistics/${language.id}', extra: language.name),
+                      ),
+                      const Icon(Icons.chevron_right),
+                    ],
+                  ),
                   onTap: () => context.push('/lessons/${language.id}', extra: language.name),
                 ),
               );
