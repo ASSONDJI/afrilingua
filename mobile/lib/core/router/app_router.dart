@@ -6,6 +6,7 @@ import '../../features/languages/presentation/languages_screen.dart';
 import '../../features/lessons/presentation/lessons_screen.dart';
 import '../../features/quiz/presentation/quiz_screen.dart';
 import '../../features/user/presentation/profile_screen.dart';
+import '../../features/statistics/presentation/statistics_screen.dart';
 
 final routerProvider = Provider((ref) {
   return GoRouter(
@@ -20,6 +21,14 @@ final routerProvider = Provider((ref) {
           final lessonId = state.pathParameters['lessonId']!;
           final lessonTitle = state.extra as String?;
           return QuizScreen(lessonId: lessonId, lessonTitle: lessonTitle);
+        },
+      ),
+      GoRoute(
+        path: '/statistics/:languageId',
+        builder: (context, state) {
+          final languageId = state.pathParameters['languageId']!;
+          final languageName = state.extra as String?;
+          return StatisticsScreen(languageId: languageId, languageName: languageName);
         },
       ),
       GoRoute(path: '/profile', builder: (context, state) => const ProfileScreen()),
