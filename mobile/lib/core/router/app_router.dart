@@ -6,6 +6,7 @@ import '../../features/languages/presentation/languages_screen.dart';
 import '../../features/lessons/presentation/lessons_screen.dart';
 import '../../features/quiz/presentation/quiz_screen.dart';
 import '../../features/user/presentation/profile_screen.dart';
+import '../../features/gamification/presentation/gamification_screen.dart';
 import '../../features/statistics/presentation/statistics_screen.dart';
 
 final routerProvider = Provider((ref) {
@@ -32,6 +33,7 @@ final routerProvider = Provider((ref) {
         },
       ),
       GoRoute(path: '/profile', builder: (context, state) => const ProfileScreen()),
+      GoRoute(path: '/progression', builder: (context, state) => const GamificationScreen()),
       GoRoute(
         path: '/lessons/:languageId',
         builder: (context, state) {

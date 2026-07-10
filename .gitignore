@@ -32,3 +32,4 @@ mobile/macos/
 
 # Pytest
 .pytest_cache/
+logs/

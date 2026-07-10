@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../auth/presentation/auth_providers.dart';
 import 'user_providers.dart';
 
@@ -44,6 +45,12 @@ class ProfileScreen extends ConsumerWidget {
                   Text(profile.bio!, style: Theme.of(context).textTheme.bodyMedium),
                 ],
                 const SizedBox(height: 32),
+                ElevatedButton.icon(
+                  onPressed: () => context.push('/progression'),
+                  icon: const Icon(Icons.emoji_events_rounded),
+                  label: const Text('Ma progression'),
+                ),
+                const SizedBox(height: 12),
                 OutlinedButton.icon(
                   onPressed: () async {
                     await ref.read(authControllerProvider.notifier).logout();
