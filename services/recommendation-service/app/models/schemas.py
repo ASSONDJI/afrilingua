@@ -109,3 +109,11 @@ class ProgressionResponse(BaseModel):
     lessons_completed: int
     has_perfect_quiz: bool
     badges: list[BadgeInfo]
+
+
+class BadgeCatalogEntry(BaseModel):
+    code: str
+    name: str
+    description: str
+    criteria_type: str
+    criteria_value: int
