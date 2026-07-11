@@ -117,6 +117,11 @@ components:
         lessonId:
           type: string
           format: uuid
+        wordId:
+          type: string
+          format: uuid
+          nullable: true
+          description: content-service's word id this question tests, used by recommendation-service to track unique learned words.
         type:
           type: string
           enum: [MULTIPLE_CHOICE, MATCHING, FILL_IN_THE_BLANK]
@@ -157,6 +162,10 @@ components:
         lessonId:
           type: string
           format: uuid
+        wordId:
+          type: string
+          format: uuid
+          nullable: true
         type:
           type: string
           enum: [MULTIPLE_CHOICE, MATCHING, FILL_IN_THE_BLANK]

@@ -28,6 +28,13 @@ public class Question {
     @Column(name = "lesson_id", nullable = false)
     private UUID lessonId;
 
+    /** content-service's word id this question tests -- nullable for legacy
+     * questions created before this field existed, but required for the
+     * gamification pipeline (recommendation-service needs it to track
+     * unique learned words per user). */
+    @Column(name = "word_id")
+    private UUID wordId;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private QuestionType type;

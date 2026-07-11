@@ -56,9 +56,10 @@ def fetch_existing_question_count(lesson_id: str) -> int:
     return len(response.json())
 
 
-def create_question(lesson_id: str, question_text: str, options: list[str], correct_answer: str) -> None:
+def create_question(lesson_id: str, word_id: str, question_text: str, options: list[str], correct_answer: str) -> None:
     payload = {
         "lessonId": lesson_id,
+        "wordId": word_id,
         "type": "MULTIPLE_CHOICE",
         "questionText": question_text,
         "options": options,
@@ -91,7 +92,7 @@ def generate_for_lesson(language_name: str, lesson: dict, force: bool) -> tuple[
         random.shuffle(options)
 
         question_text = f"Comment dit-on « {word['translation']} » en {language_name} ?"
-        create_question(lesson_id, question_text, options, word["word"])
+        create_question(lesson_id, word["id"], question_text, options, word["word"])
         questions_created += 1
 
     print(f"  [{lesson['title']}] {questions_created} question(s) creee(s)")

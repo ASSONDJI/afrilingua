@@ -25,6 +25,7 @@ public class QuestionService {
     public QuestionWithAnswer create(CreateQuestionRequest request) {
         cm.afrilingua.quiz.entity.Question question = cm.afrilingua.quiz.entity.Question.builder()
                 .lessonId(request.getLessonId())
+                .wordId(request.getWordId())
                 .type(cm.afrilingua.quiz.entity.Question.QuestionType.valueOf(request.getType().getValue()))
                 .questionText(request.getQuestionText())
                 .options(request.getOptions() != null ? request.getOptions() : List.of())
@@ -71,6 +72,7 @@ public class QuestionService {
         return new Question()
                 .id(question.getId())
                 .lessonId(question.getLessonId())
+                .wordId(question.getWordId())
                 .type(Question.TypeEnum.valueOf(question.getType().name()))
                 .questionText(question.getQuestionText())
                 .options(new java.util.ArrayList<>(question.getOptions()));
