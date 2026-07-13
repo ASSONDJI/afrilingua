@@ -20,8 +20,12 @@ final routerProvider = Provider((ref) {
         path: '/quiz/:lessonId',
         builder: (context, state) {
           final lessonId = state.pathParameters['lessonId']!;
-          final lessonTitle = state.extra as String?;
-          return QuizScreen(lessonId: lessonId, lessonTitle: lessonTitle);
+          final extra = state.extra as Map<String, dynamic>?;
+          return QuizScreen(
+            lessonId: lessonId,
+            lessonTitle: extra?['title'] as String?,
+            languageId: extra?['languageId'] as String?,
+          );
         },
       ),
       GoRoute(

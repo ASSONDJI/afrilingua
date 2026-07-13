@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'lesson_providers.dart';
 import 'package:go_router/go_router.dart';
+import '../../gamification/presentation/gamification_providers.dart';
 
 class LessonsScreen extends ConsumerWidget {
   final String languageId;
@@ -47,7 +48,31 @@ class LessonsScreen extends ConsumerWidget {
                   title: Text(lesson.title, style: const TextStyle(fontWeight: FontWeight.w700)),
                   subtitle: Text('Niveau ${lesson.level} · ${lesson.wordIds.length} mots'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push('/quiz/${lesson.id}', extra: lesson.title),
+                  onTap: () async {
+                    // Snapshot the current progression before entering the
+                    // quiz, so LessonCompleteScreen can compute XP gained by
+                    // diffing against the post-lesson value rather than
+                    // guessing a number.
+                    final userId = ref.read(accountIdProviderForGamification);
+                    if (userId != null) {
+                      try {
+                        final current = await ref
+                            .read(gamificationRepositoryProvider)
+                            .loadProgression(userId);
+                        ref.read(lastKnownProgressionSnapshotProvider.notifier).state = current;
+                      } catch (_) {
+                        // Best-effort: a failed snapshot just means the XP
+                        // summary screen falls back to showing the raw
+                        // post-lesson value instead of a diff.
+                      }
+                    }
+                    if (context.mounted) {
+                      context.push(
+                        '/quiz/${lesson.id}',
+                        extra: {'title': lesson.title, 'languageId': lesson.languageId},
+                      );
+                    }
+                  },
                 ),
               );
             },

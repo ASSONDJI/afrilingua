@@ -38,3 +38,12 @@ final gamificationDataProvider =
   ]);
   return (results[0] as Progression, results[1] as List<BadgeCatalogEntry>);
 });
+
+
+/// Alias for readability at call sites outside the gamification feature.
+final accountIdProviderForGamification = accountIdProvider;
+
+/// Holds the last progression snapshot seen, used by LessonCompleteScreen
+/// to compute XP gained as (progression after lesson) - (this value),
+/// rather than guessing a number client-side.
+final lastKnownProgressionSnapshotProvider = StateProvider<Progression?>((ref) => null);
