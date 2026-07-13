@@ -5,6 +5,7 @@ import cm.afrilingua.content.dto.CreateWordRequest;
 import cm.afrilingua.content.entity.Language;
 import cm.afrilingua.content.entity.Word;
 import cm.afrilingua.content.exception.WordNotFoundException;
+import org.springframework.web.multipart.MultipartFile;
 import cm.afrilingua.content.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class WordService {
     private final WordRepository wordRepository;
     private final LanguageService languageService;
     private final RecommendationClient recommendationClient;
+    private final MediaStorageService mediaStorageService;
 
     @Transactional
     public cm.afrilingua.content.dto.Word create(UUID languageId, CreateWordRequest request) {
@@ -75,6 +77,24 @@ public class WordService {
         return toDto(word);
     }
 
+    @Transactional
+    public cm.afrilingua.content.dto.Word uploadAudio(UUID wordId, MultipartFile file) {
+        Word word = wordRepository.findById(wordId)
+                .orElseThrow(() -> new WordNotFoundException(wordId));
+        word.setAudioUrl(mediaStorageService.uploadAudio(file, wordId.toString()));
+        wordRepository.save(word);
+        return toDto(word);
+    }
+
+    @Transactional
+    public cm.afrilingua.content.dto.Word uploadImage(UUID wordId, MultipartFile file) {
+        Word word = wordRepository.findById(wordId)
+                .orElseThrow(() -> new WordNotFoundException(wordId));
+        word.setImageUrl(mediaStorageService.uploadImage(file, wordId.toString()));
+        wordRepository.save(word);
+        return toDto(word);
+    }
+
     public List<cm.afrilingua.content.dto.Word> listByLanguage(UUID languageId) {
         languageService.getEntityById(languageId);
 
@@ -104,6 +124,7 @@ public class WordService {
                         : null)
                 .tone2(word.getTone2() != null
                         ? cm.afrilingua.content.dto.Word.Tone2Enum.fromValue(word.getTone2())
-                        : null);
+                        : null)
+                .imageUrl(word.getImageUrl());
     }
 }

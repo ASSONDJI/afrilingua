@@ -178,6 +178,78 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /words/{wordId}/audio:
+    post:
+      tags: [words]
+      operationId: uploadWordAudio
+      summary: Upload a pronunciation audio file for a word
+      parameters:
+        - name: wordId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Audio uploaded, word updated with its public URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Word'
+        '404':
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /words/{wordId}/image:
+    post:
+      tags: [words]
+      operationId: uploadWordImage
+      summary: Upload an illustration image for a word
+      parameters:
+        - name: wordId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Image uploaded, word updated with its public URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Word'
+        '404':
+          description: Word not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     CreateLanguageRequest:
@@ -260,6 +332,9 @@ components:
           type: string
         audioUrl:
           type: string
+        imageUrl:
+          type: string
+          nullable: true
         difficultyLevel:
           type: string
           enum: [BEGINNER, INTERMEDIATE, ADVANCED]

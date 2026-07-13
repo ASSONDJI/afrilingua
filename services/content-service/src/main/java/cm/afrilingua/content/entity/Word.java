@@ -42,6 +42,9 @@ public class Word {
     @Column(name = "audio_url")
     private String audioUrl;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "difficulty_level", nullable = false)
     @Builder.Default
